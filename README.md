@@ -41,13 +41,15 @@ weather/
 ### 1. Клонирование репозитория
 
 ```bash
-git clone <repository-url>
+git clone <git@github.com:axelaxd/weather.git>
 cd weather
 ```
 
 ### 2. Настройка переменных окружения
 Создайте файл .env в корне проекта:
+```
 API_TOKEN=your_openweathermap_api_token_here
+```
 
 Получить API токен можно на OpenWeatherMap.
 
@@ -151,7 +153,7 @@ GET /api/weather/favorite
 | Ошибка | Код | Статус |
 |--------|-----|--------|
 | Неверный JSON | `INVALID_REQUEST` | 400 |
-| Неверный логин или пароль | - | 401 |
+| Неверный логин или пароль | `INVALID_CREDENTIALS` | 401 |
 | Внутренняя ошибка | `INTERNAL_ERROR` | 500 |
 
 #### Получить прогноз по городу (`GET /api/weather`)
