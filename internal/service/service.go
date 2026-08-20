@@ -22,19 +22,19 @@ type Requests interface {
 
 // Service реализует бизнес-логику приложения
 type Service struct {
-	repo Repository
+	repo     Repository
 	requests Requests
-	auth *auth.Auth
-	mu sync.RWMutex
+	auth     *auth.Auth
+	mu       sync.RWMutex
 }
 
 // New создаёт Service
 func New(repo Repository, a *auth.Auth, req Requests) *Service {
 	return &Service{
-		repo: repo,
+		repo:     repo,
 		requests: req,
-		auth: a,
-		mu: sync.RWMutex{},
+		auth:     a,
+		mu:       sync.RWMutex{},
 	}
 }
 
@@ -119,7 +119,6 @@ func (s *Service) GetFavoriteInfo(userID int64, days int) (map[string][]domain.W
 			return nil, err
 		}
 
-		
 		ls[c.Name] = weather
 	}
 

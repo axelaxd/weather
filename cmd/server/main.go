@@ -23,13 +23,13 @@ import (
 func main() {
 	if err := godotenv.Load(); err != nil {
 		text := "Warning: .env file not found"
-        panic(text)
-    }
+		panic(text)
+	}
 
 	// Создаем все необходимое
 
 	st := store.New()
-	
+
 	a := auth.New()
 
 	req := request.New()
@@ -45,7 +45,7 @@ func main() {
 	signal.Notify(serviceChan, syscall.SIGINT, syscall.SIGTERM)
 
 	server := &http.Server{
-		Addr: ":8080",
+		Addr:    ":8080",
 		Handler: rout,
 	}
 

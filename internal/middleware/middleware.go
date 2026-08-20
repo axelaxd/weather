@@ -2,12 +2,12 @@ package middleware
 
 import (
 	"context"
-	"weather/internal/auth"
-	"weather/internal/handler"
 	"log"
 	"net/http"
 	"strings"
 	"time"
+	"weather/internal/auth"
+	"weather/internal/handler"
 )
 
 type Middleware struct {
@@ -60,16 +60,16 @@ func (rec *statusRecorder) WriteHeader(statusCode int) {
 func Logging(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		
+
 		recorder := &statusRecorder{
 			ResponseWriter: w,
-			status: http.StatusOK,
+			status:         http.StatusOK,
 		}
 
 		next.ServeHTTP(recorder, r)
-		
+
 		duration := time.Since(start)
-		log.Printf("method=%s path=%s status=%d duration=%v", 
+		log.Printf("method=%s path=%s status=%d duration=%v",
 			r.Method, r.URL.Path, recorder.status, duration)
 	})
 }

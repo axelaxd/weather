@@ -1,8 +1,8 @@
 package store
 
 import (
-	"sync"
 	"slices"
+	"sync"
 	"weather/internal/domain"
 )
 
@@ -23,13 +23,13 @@ type Store struct {
 	nextID int64
 }
 
-func New() *Store{
+func New() *Store {
 	return &Store{
-		mu: sync.RWMutex{},
-		users: make(map[int64]*domain.User),
+		mu:           sync.RWMutex{},
+		users:        make(map[int64]*domain.User),
 		usersByLogin: make(map[string]*domain.User),
-		cities: make(map[int64][]*domain.City),
-		nextID: 1,
+		cities:       make(map[int64][]*domain.City),
+		nextID:       1,
 	}
 }
 
@@ -42,17 +42,17 @@ func (s *Store) CreateUser(login, passwordHash string) (*domain.User, error) {
 	if _, ok := s.usersByLogin[login]; ok {
 		return nil, domain.ErrUserExists
 	}
-	
+
 	NewUser := &domain.User{
-		ID: s.nextID,
-		Login: login,
+		ID:           s.nextID,
+		Login:        login,
 		PasswordHash: passwordHash,
 	}
 
 	s.users[s.nextID] = NewUser
 	s.usersByLogin[login] = NewUser
 	s.nextID += 1
-	
+
 	return NewUser, nil
 }
 

@@ -8,13 +8,13 @@ import (
 )
 
 type Auth struct {
-	mu sync.RWMutex
+	mu     sync.RWMutex
 	tokens map[string]int64 // token -> userID
 }
 
 func New() *Auth {
 	return &Auth{
-		mu: sync.RWMutex{},
+		mu:     sync.RWMutex{},
 		tokens: make(map[string]int64),
 	}
 }

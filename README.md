@@ -20,6 +20,7 @@ RESTful API сервис, который позволяет:
   - [godotenv](https://github.com/joho/godotenv) - для загрузки переменных окружения
 
 ## 📁 Структура проекта
+```
 weather/
 ├── cmd/weather/main.go # Точка входа
 ├── internal/
@@ -33,6 +34,7 @@ weather/
 │ └── store/ # In-memory хранилище
 ├── .env # Переменные окружения
 └── go.mod
+```
 
 ## 🔧 Установка и запуск
 
@@ -92,18 +94,22 @@ Content-Type: application/json
 GET /api/weather
 
 Тело запроса:
+```
 {
     "name": "Moscow",
     "days": 3
 }
+```
 
 * Добавить город в избранное
 POST /api/favorite
 
 Тело запроса:
+```
 {
     "name": "Moscow"
 }
+```
 
 * Получить список избранных городов
 GET /api/favorite
@@ -112,9 +118,11 @@ GET /api/favorite
 GET /api/weather/favorite
 
 Тело запроса:
+```
 {
     "days": 3
 }
+```
 
 ## 🚦 Сводка по ошибкам
 

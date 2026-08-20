@@ -12,20 +12,20 @@ import (
 )
 
 type Request struct {
-	client *http.Client
+	client  *http.Client
 	baseURL string
 }
 
 func New() *Request {
 	url := "https://api.openweathermap.org/data/2.5/forecast"
 	return &Request{
-		client: &http.Client{},
+		client:  &http.Client{},
 		baseURL: url,
 	}
 }
 
 var (
-	ErrNoApiToken = errors.New("Api Token не добавлен в систему")
+	ErrNoApiToken    = errors.New("Api Token не добавлен в систему")
 	ErrNoActiveToken = errors.New("Unable to connect to service")
 )
 
@@ -49,13 +49,13 @@ func (r *Request) GetCityInfo(name string, count int) ([]domain.Weather, error) 
 	}
 
 	// Допустим пользователь хочет получить данные на 3 дня
-	// Тогда нужно сделать так, чтобы точно было на один день 
+	// Тогда нужно сделать так, чтобы точно было на один день
 	// больше данных
 
 	url := fmt.Sprintf("%s?q=%s&units=metric&cnt=%d&lang=%s&appid=%s",
 		r.baseURL,
 		name,
-		count * 8,
+		count*8,
 		"ru",
 		token,
 	)
@@ -64,7 +64,7 @@ func (r *Request) GetCityInfo(name string, count int) ([]domain.Weather, error) 
 	if err != nil {
 		return nil, err
 	}
-	
+
 	resp, err := r.client.Do(req)
 	if err != nil {
 		return nil, err
@@ -79,20 +79,20 @@ func (r *Request) GetCityInfo(name string, count int) ([]domain.Weather, error) 
 
 	var result struct {
 		List []struct {
-			Date string `json:"dt_txt"`
+			Date        string `json:"dt_txt"`
 			Coordinates struct {
 				Lon float32 `json:"lon"`
 				Lay float32 `json:"lat"`
 			} `json:"coord"`
 			Weather []struct {
-				Main string `json:"main"` // clouds
+				Main        string `json:"main"`        // clouds
 				Description string `json:"description"` // облачно с прояснениями
 			} `json:"weather"`
 			Temperature struct {
-				Temp float32 `json:"temp"`
+				Temp      float32 `json:"temp"`
 				FeelsLike float32 `json:"feels_like"`
-				TempMin float32 `json:"temp_min"`
-				TempMax float32 `json:"temp_max"`
+				TempMin   float32 `json:"temp_min"`
+				TempMax   float32 `json:"temp_max"`
 			} `json:"main"`
 		} `json:"list"`
 	}
@@ -102,47 +102,47 @@ func (r *Request) GetCityInfo(name string, count int) ([]domain.Weather, error) 
 	}
 
 	// Группируем по дням
-    dayData := make(map[string][]domain.Weather)
-    
-    for _, item := range result.List {
-        date := item.Date[:10]
-        dayData[date] = append(dayData[date], domain.Weather{
-            Date:        date,
-            Temp:        item.Temperature.Temp,
-            TempMin:     item.Temperature.TempMin,
-            TempMax:     item.Temperature.TempMax,
-            Description: item.Weather[0].Description,
-        })
-    }
+	dayData := make(map[string][]domain.Weather)
 
-    var dates []string
-    for date := range dayData {
-        dates = append(dates, date)
-    }
+	for _, item := range result.List {
+		date := item.Date[:10]
+		dayData[date] = append(dayData[date], domain.Weather{
+			Date:        date,
+			Temp:        item.Temperature.Temp,
+			TempMin:     item.Temperature.TempMin,
+			TempMax:     item.Temperature.TempMax,
+			Description: item.Weather[0].Description,
+		})
+	}
 
-    sort.Strings(dates)
-    
+	var dates []string
+	for date := range dayData {
+		dates = append(dates, date)
+	}
+
+	sort.Strings(dates)
+
 	var ls []domain.Weather
-    for i := 0; i < count && i < len(dates); i++ {
+	for i := 0; i < count && i < len(dates); i++ {
 		date := dates[i]
 		records := dayData[date]
 
-        min := records[0].TempMin
-        max := records[0].TempMax
-        
-        for _, record := range records {
-            if record.TempMin < min {
-                min = record.TempMin
-            }
-            if record.TempMax > max {
-                max = record.TempMax
-            }
-        }
+		min := records[0].TempMin
+		max := records[0].TempMax
+
+		for _, record := range records {
+			if record.TempMin < min {
+				min = record.TempMin
+			}
+			if record.TempMax > max {
+				max = record.TempMax
+			}
+		}
 
 		weather := domain.Weather{
-			Date: date,
-			TempMin: min,
-			TempMax: max,
+			Date:        date,
+			TempMin:     min,
+			TempMax:     max,
 			Description: records[0].Description,
 		}
 
@@ -151,7 +151,7 @@ func (r *Request) GetCityInfo(name string, count int) ([]domain.Weather, error) 
 		}
 
 		ls = append(ls, weather)
-    }
+	}
 
 	return ls, nil
 }

@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"errors"
-	"weather/internal/domain"
-	"net/http"
+	"fmt"
 	"log"
+	"net/http"
+	"weather/internal/domain"
 )
 
 type Service interface {
@@ -27,7 +27,7 @@ func New(svc Service) *Handler {
 }
 
 type ErrorResponse struct {
-	Code string `json:"code"`
+	Code    string `json:"code"`
 	Message string `json:"message"`
 }
 
@@ -41,7 +41,7 @@ func WriteError(w http.ResponseWriter, status int, code, userMsg string, interna
 	w.WriteHeader(status)
 
 	response := ErrorResponse{
-		Code: code,
+		Code:    code,
 		Message: userMsg,
 	}
 
@@ -57,7 +57,7 @@ func WriteJSON(w http.ResponseWriter, status int, v any) {
 }
 
 type Req struct {
-	Login string `json:"login"`
+	Login    string `json:"login"`
 	Password string `json:"password"`
 }
 
@@ -113,7 +113,7 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 type WeatherReq struct {
 	Name string `json:"name"`
-	Days int `json:"days"`
+	Days int    `json:"days"`
 }
 
 // GetWeather обрабатывает GET N
@@ -140,7 +140,7 @@ func (h *Handler) GetWeatherByName(w http.ResponseWriter, r *http.Request) {
 	for _, s := range spisok {
 		text += fmt.Sprintf("%s: Min %v°C  Max %v°C Descriptio: %s\n", s.Date, s.TempMin, s.TempMax, s.Description)
 	}
-	
+
 	WriteJSON(w, http.StatusOK, text)
 }
 
@@ -170,9 +170,9 @@ func (h *Handler) AddFavoriteCity(w http.ResponseWriter, r *http.Request) {
 	}
 
 	Msg := DoText(cities)
-	
+
 	WriteJSON(w, http.StatusOK, Msg)
-} 
+}
 
 // GetCityFavorite обрабатывает GET /api/favorite
 // Возвращает список добавленных городов
@@ -184,7 +184,7 @@ func (h *Handler) GetCityFavorite(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cities, err := h.svc.AddFavoriteCity(userID, "") 
+	cities, err := h.svc.AddFavoriteCity(userID, "")
 	if err != nil {
 		WriteError(w, http.StatusInternalServerError, "INTERNAL_ERROR", "внутрення ошибка", err)
 		return
@@ -225,7 +225,6 @@ func (h *Handler) GetWeatherFavorite(w http.ResponseWriter, r *http.Request) {
 	WriteJSON(w, http.StatusOK, msg)
 }
 
-
 // ---------------------------------------------------------------------------
 // Вспомогательная функция для работы с текстом
 // ---------------------------------------------------------------------------
@@ -248,11 +247,9 @@ func DoTextWeather(weathers map[string][]domain.Weather) string {
 			text += fmt.Sprintf("%s  Min: %v°C  Max: %v°C  Description: %s", w.Date, w.TempMin, w.TempMax, w.Description)
 		}
 	}
-	
+
 	return text
 }
-
-
 
 // ---------------------------------------------------------------------------
 // Вспомогательная функция для работы с контекстом
